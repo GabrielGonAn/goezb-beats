@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Catálogo de Beats</title>
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Carga limpia de Google Material Icons (unificada) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <style>
+    /* Configuración asegurada para los iconos de Google */
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined' !important;
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+
+    /* ESTILOS PARA LOS FILTROS DE GÉNERO */
+    .filter-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-filter {
+      position: relative;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      height: 38px;
+      box-sizing: border-box;
+    }
+
+    .btn-filter:hover {
+      background-color: #333;
+    }
+
+    /* ESTADO CUANDO HAY FILTROS ACTIVOS */
+    .btn-filter.is-filtered {
+      background-color: rgba(247, 0, 98, 0.15);
+      border-color: #F70062;
+      color: #F70062;
+      box-shadow: 0 0 12px rgba(247, 0, 98, 0.3);
+    }
+
+    /* Indicador puntual animado cuando los filtros están activos */
+    .btn-filter.is-filtered::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 10px;
+      height: 10px;
+      background-color: #F70062;
+      border-radius: 50%;
+      border: 2px solid #181818;
+      box-shadow: 0 0 8px #F70062;
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(247, 0, 98, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(247, 0, 98, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(247, 0, 98, 0);
+      }
+    }
+
+    /* BOTÓN DE LIMPIAR CON TAMAÑO FIJO Y OVERFLOW HIDDEN PARA EVITAR DESBORDAMIENTO */
+    .btn-reset-filter {
+      background-color: #2a2a2a;
+      color: #aaa;
+      border: 1px solid #444;
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      overflow: hidden; /* Evita que el texto plano salga si falla la fuente */
+    }
+
+    .btn-reset-filter:hover {
+      background-color: #F70062;
+      color: #fff;
+      border-color: #F70062;
+    }
+
+    .filter-dropdown {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background-color: #181818;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+      z-index: 100;
+      width: 220px;
+    }
+
+    .filter-dropdown.active {
+      display: block;
+    }
+
+    .filter-dropdown h4 {
+      color: #fff;
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 6px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .checkbox-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      accent-color: #F70062;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .btn-apply-filter {
+      width: 100%;
+      background-color: #F70062;
+      color: #fff;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-apply-filter:hover {
+      opacity: 0.9;
+    }
+
+    
+
+
+        /* Quita el recuadro gris feo por defecto al tocar en celulares */
+    * {
+    -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Efecto suave para botones, íconos y tarjetas */
+    .btn-filter, 
+    .btn-reset-filter, 
+    .btn-buy, 
+    .beat-card, 
+    .nav-btn {
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.2s ease, box-shadow 0.2s ease !important;
+    }
+
+    /* Estado activo que se aplicará al tocar con el dedo en celular */
+    .touch-active {
+    transform: scale(1.05) !important;
+    filter: brightness(1.2) !important;
+    box-shadow: 0 6px 18px rgba(247, 0, 98, 0.3) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE NAVEGACIÓN -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="logoweb.jpg" alt="Logo">
+      <span>Goez Producer</span>
+    </div>
+    <ul class="nav-links">  
+      <li><a href="#" class="nav-btn active" data-target="inicio">Inicio</a></li>
+      <li><a href="#" class="nav-btn" data-target="beats">Beats</a></li>
+      <li><a href="#" class="nav-btn" data-target="soundpacks">Soundpacks</a></li>
+      <li><a href="#" class="nav-btn" data-target="mi-musica">Mi Música</a></li>
+      <li><a href="#" class="nav-btn" data-target="contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+    <!-- 1. INICIO -->
+    <section id="inicio" class="section active zoom-in">
+      <div class="hero-banner" onclick="irABeats()">
+        <div class="hero-text" >
+          <span class="text-ver">Ver</span>
+          <span class="text-catalogo">Catálogo</span>
+        </div>
+        <img src="portadas1.png" alt="Portadas de Beats" class="hero-image">
+      </div>
+    </section>
+
+    <!-- 2. BEATS (CATÁLOGO DINÁMICO) -->
+    <section id="beats" class="section">
+      <h2 style="color: #F70062; margin-bottom: 15px;">Catálogo de Instrumentales</h2>
+      
+      <!-- CONTROLES DE FILTRADO -->
+      <div class="filter-wrapper">
+        <div class="filter-controls">
+          <button id="btn-filter" class="btn-filter" onclick="toggleFilterDropdown()">
+            <span class="material-symbols-outlined">tune</span>
+            <span>Filtrar</span>
+          </button>
+          
+          <button class="btn-reset-filter" onclick="limpiarFiltros()" title="Limpiar Filtros">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+
+        <!-- DESPLEGABLE DE GÉNEROS -->
+        <div id="filter-dropdown" class="filter-dropdown">
+          <h4>Género</h4>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" value="reggaeton" class="genre-checkbox"> Reggaeton
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" value="trap" class="genre-checkbox"> Trap
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" value="guaracha" class="genre-checkbox"> Guaracha
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" value="cumbia" class="genre-checkbox"> Cumbia
+            </label>
+          </div>
+          <button class="btn-apply-filter" onclick="aplicarFiltros()">Aplicar</button>
+        </div>
+      </div>
+
+      <div id="beats-container" class="beats-grid">
+        <!-- Aquí se cargan tus beats desde beats.js -->
+      </div>
+    </section>
+
+    <!-- 3. SOUNDPACKS -->
+    <section id="soundpacks" class="section">
+      <div class="card-preview">
+        <h2>Librerías & Soundpacks</h2>
+        <p>Próximamente drumkits y presets disponibles.</p>
+      </div>
+    </section>
+
+    <!-- 4. MI MÚSICA -->
+    <section id="mi-musica" class="section">
+      <div class="card-preview">
+        <h2>Mi Música</h2>
+        <p>Sencillos y colaboraciones en plataformas digitales.</p>
+      </div>
+    </section>
+
+    <!-- 5. CONTACTO -->
+    <section id="contacto" class="section">
+      <div class="card-preview">
+        <h2>Contacto Directo</h2>
+        <p>¿Buscas un trabajo personalizado o licencia exclusiva? Mándame mensaje por WhatsApp.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- VENTANA MODAL DE DETALLES Y LICENCIAS -->
+  <div id="modal-detalles" class="modal-overlay">
+    <div class="modal-content">
+      <span class="modal-close" onclick="cerrarModal()">&times;</span>
+      <h3 id="modal-beat-title" class="modal-title">Título del Beat</h3>
+      <p id="modal-beat-meta" class="modal-meta">Género • BPM</p>
+
+      <div class="options-container">
+        <!-- Opción 1: WAV Básico -->
+        <div class="option-card">
+            <h4>Licencia WAV Básica</h4>
+            <p class="option-price" id="opt-price-basic">$0 USD</p>
+            <ul class="option-includes">
+            <li>✓ Licencia Exclusiva</li>
+            <li>✓ Archivo WAV de alta calidad</li>
+            <li>✓ Audio masterizado</li>
+            </ul>
+            <button class="btn-select" onclick="seleccionarOpcion('Básica (Solo WAV)')">
+            Preguntar por este Beat
+            <span class="btn-subtext">y su Licencia</span>
+            </button>
+        </div>
+
+        <!-- Opción 2: WAV + Stems (Pro) -->
+        <div class="option-card pro">
+            <div class="badge-pro">RECOMENDADO</div>
+            <h4>Licencia Pro / Completa</h4>
+            <p class="option-price" id="opt-price-pro">$0 USD</p>
+            <ul class="option-includes">
+            <li>✓ Licencia Exclusiva</li>
+            <li>✓ Archivo WAV de alta calidad</li>
+            <li>✓ Stems (Trackouts / Pistas separadas)</li>
+            <li>✓ Loops y extras</li>
+            </ul>
+            <button class="btn-select pro-btn" onclick="seleccionarOpcion('Pro (WAV + Stems + Loops)')">
+            Preguntar por este Beat
+            <span class="btn-subtext">y su Licencia</span>
+            </button>
+        </div>
+        </div>
+
+      <!-- Vista previa del Ticket generado -->
+      <div id="ticket-preview-container" class="ticket-preview-container" style="display: none;">
+        <h4 style="color: #F70062; margin-bottom: 8px;">Ticket de Solicitud Generado</h4>
+        <p style="font-size: 0.85rem; color: #ccc; margin-bottom: 12px;">Descarga esta imagen y envíamela por WhatsApp:</p>
+        <div id="ticket-canvas-wrapper"></div>
+        <div class="ticket-actions">
+          <a id="btn-download-ticket" class="btn-buy" download="ticket_beat.png">⬇ Descargar Imagen</a>
+          <a id="btn-wa-ticket" target="_blank" class="btn-buy" style="background-color: #25D366; color: #000;">💬 Enviar por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT CON LOS BEATS Y LÓGICA -->
+  <script src="beats.js"></script>
+  <script>
+    const beatsContainer = document.getElementById('beats-container');
+    const MI_WHATSAPP = "527121536916";
+
+    let beatSeleccionado = null;
+
+    function renderBeats(beatsAMostrar = misBeats) {
+      beatsContainer.innerHTML = '';
+
+      if (beatsAMostrar.length === 0) {
+        beatsContainer.innerHTML = `<p style="color: #888; grid-column: 1/-1; text-align: center; padding: 20px;">No se encontraron beats con los géneros seleccionados.</p>`;
+        return;
+      }
+
+      beatsAMostrar.forEach(beat => {
+        const card = document.createElement('div');
+        card.className = `beat-card ${beat.vendido ? 'beat-sold' : ''}`;
+
+        card.innerHTML = `
+          <div>
+            <div class="beat-header">
+              <span class="beat-title">${beat.titulo}</span>
+              <span class="beat-tag">${beat.genre}</span>
+            </div>
+            <div class="beat-details">
+              <span>BPM: ${beat.bpm}</span>
+            </div>
+          </div>
+
+          <audio controls preload="metadata">
+            <source src="${beat.archivo}" type="audio/mpeg">
+            Tu navegador no soporta el reproductor de audio.
+          </audio>
+
+          ${beat.vendido 
+            ? `<div class="sold-badge">❌ VENDIDO</div>` 
+            : `
+              <div class="beat-price">Desde ${beat.precioBasico}</div>
+              <button class="btn-buy" onclick="abrirDetalles(${beat.id})">Ver Detalles</button>
+            `
+          }
+        `;
+        beatsContainer.appendChild(card);
+      });
+    }
+
+    renderBeats();
+
+    function toggleFilterDropdown() {
+      const dropdown = document.getElementById('filter-dropdown');
+      dropdown.classList.toggle('active');
+    }
+
+    document.addEventListener('click', (e) => {
+      const wrapper = document.querySelector('.filter-wrapper');
+      if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('filter-dropdown').classList.remove('active');
+      }
+    });
+
+    function aplicarFiltros() {
+      const checkboxes = document.querySelectorAll('.genre-checkbox:checked');
+      const generosSeleccionados = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+
+      const btnFilter = document.getElementById('btn-filter');
+
+      if (generosSeleccionados.length === 0) {
+        renderBeats(misBeats);
+        btnFilter.classList.remove('is-filtered');
+      } else {
+        const beatsFiltrados = misBeats.filter(beat => {
+          const generoBeat = beat.genre.toLowerCase();
+          return generosSeleccionados.some(g => generoBeat.includes(g));
+        });
+        renderBeats(beatsFiltrados);
+        btnFilter.classList.add('is-filtered');
+      }
+
+      document.getElementById('filter-dropdown').classList.remove('active');
+    }
+
+    function limpiarFiltros() {
+      const checkboxes = document.querySelectorAll('.genre-checkbox');
+      checkboxes.forEach(cb => cb.checked = false);
+      renderBeats(misBeats);
+      
+      const btnFilter = document.getElementById('btn-filter');
+      btnFilter.classList.remove('is-filtered');
+
+      document.getElementById('filter-dropdown').classList.remove('active');
+    }
+
+    const modalDetalles = document.getElementById('modal-detalles');
+
+    function abrirDetalles(id) {
+      beatSeleccionado = misBeats.find(b => b.id === id);
+      if (!beatSeleccionado) return;
+
+      document.getElementById('modal-beat-title').innerText = beatSeleccionado.titulo;
+      document.getElementById('modal-beat-meta').innerText = `Género: ${beatSeleccionado.genre} • BPM: ${beatSeleccionado.bpm}`;
+      document.getElementById('opt-price-basic').innerText = beatSeleccionado.precioBasico;
+      document.getElementById('opt-price-pro').innerText = beatSeleccionado.precioPro;
+
+      document.getElementById('ticket-preview-container').style.display = 'none';
+
+      modalDetalles.classList.add('active');
+    }
+
+    function cerrarModal() {
+      modalDetalles.classList.remove('active');
+    }
+
+    modalDetalles.addEventListener('click', (e) => {
+      if (e.target === modalDetalles) {
+        cerrarModal();
+      }
+    });
+
+    function seleccionarOpcion(tipoLicencia) {
+      const precioElegido = tipoLicencia.includes('Básica') 
+        ? beatSeleccionado.precioBasico 
+        : beatSeleccionado.precioPro;
+
+      const incluyeTexto = tipoLicencia.includes('Básica') 
+        ? "Incluye: Archivo WAV de alta calidad masterizado" 
+        : "Incluye: WAV + Stems (Trackouts) + Loops & Extras";
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 500;
+      canvas.height = 360;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#181818';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#F70062';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+      ctx.fillStyle = '#F70062';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText('SOLICITUD DE INSTRUMENTAL', 30, 45);
+
+      ctx.fillStyle = '#888888';
+      ctx.font = '12px sans-serif';
+      const fecha = new Date().toLocaleDateString();
+      ctx.fillText(`FECHA: ${fecha}`, 350, 45);
+
+      ctx.strokeStyle = '#333333';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(30, 60);
+      ctx.lineTo(470, 60);
+      ctx.stroke();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText(`BEAT: "${beatSeleccionado.titulo}"`, 30, 95);
+
+      ctx.fillStyle = '#AAAAAA';
+      ctx.font = '14px sans-serif';
+      ctx.fillText(`Género: ${beatSeleccionado.genre}  |  BPM: ${beatSeleccionado.bpm}`, 30, 125);
+
+      ctx.fillStyle = '#F70062';
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillText(`LICENCIA SELECCIONADA:`, 30, 165);
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '14px sans-serif';
+      ctx.fillText(tipoLicencia, 30, 190);
+
+      ctx.fillStyle = '#888888';
+      ctx.font = '13px sans-serif';
+      ctx.fillText(incluyeTexto, 30, 215);
+
+      ctx.fillStyle = '#28a745';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText(`PRECIO: ${precioElegido}`, 30, 265);
+
+      ctx.fillStyle = '#555555';
+      ctx.font = 'italic 11px sans-serif';
+      ctx.fillText('Envía esta imagen por WhatsApp para concretar tu pedido.', 30, 320);
+
+      const imageData = canvas.toDataURL('image/png');
+
+      const wrapper = document.getElementById('ticket-canvas-wrapper');
+      wrapper.innerHTML = `<img src="${imageData}" style="max-width: 100%; border-radius: 8px; border: 1px solid #333;" alt="Ticket Beat">`;
+
+      const btnDownload = document.getElementById('btn-download-ticket');
+      btnDownload.href = imageData;
+      btnDownload.download = `Solicitud_${beatSeleccionado.titulo.replace(/\s+/g, '_')}.png`;
+
+      const msgWa = encodeURIComponent(`Hola, me interesa solicitar el beat: "${beatSeleccionado.titulo}" en la opción: ${tipoLicencia} (${precioElegido}). Te adjunto la imagen del ticket que acabo de descargar.`);
+      document.getElementById('btn-wa-ticket').href = `https://wa.me/${MI_WHATSAPP}?text=${msgWa}`;
+
+      const ticketContainer = document.getElementById('ticket-preview-container');
+      ticketContainer.style.display = 'block';
+
+      ticketContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetSection = document.getElementById(targetId);
+
+        if (targetSection.classList.contains('active')) return;
+
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const currentSection = document.querySelector('.section.active');
+        if (currentSection) {
+          currentSection.classList.remove('zoom-in');
+          currentSection.classList.add('zoom-out');
+
+          setTimeout(() => {
+            currentSection.classList.remove('active', 'zoom-out');
+            targetSection.classList.add('active', 'zoom-in');
+          }, 180);
+        } else {
+          targetSection.classList.add('active', 'zoom-in');
+        }
+      });
+    });
+
+    function irABeats() {
+      const btnBeats = document.querySelector('.nav-btn[data-target="beats"]');
+      if (btnBeats) btnBeats.click();
+    }
+
+    // EFECTO TÁCTIL SUAVE PARA MÓVILES (SCROLL Y TOUCH)
+document.addEventListener('DOMContentLoaded', () => {
+  // Elementos a los que se aplicará el resalte táctil al tocarlos
+  const interactivos = document.querySelectorAll('.btn-filter, .btn-reset-filter, .btn-buy, .beat-card, .nav-btn');
+
+  interactivos.forEach(el => {
+    // Al posar el dedo sobre el elemento
+    el.addEventListener('touchstart', () => {
+      el.classList.add('touch-active');
+    }, { passive: true });
+
+    // Al levantar el dedo o cancelar el toque
+    el.addEventListener('touchend', () => {
+      setTimeout(() => el.classList.remove('touch-active'), 150);
+    });
+
+    el.addEventListener('touchcancel', () => {
+      el.classList.remove('touch-active');
+    });
+  });
+});
+  </script>
+</body>
+</html>
