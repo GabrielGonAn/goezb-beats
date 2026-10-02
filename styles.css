@@ -590,3 +590,196 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Tarjeta ¿Cómo comprar? en Index */
+.guide-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 25px auto;
+  max-width: 900px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.guide-card:hover,
+.guide-card:active {
+  transform: translateY(-3px);
+  border-color: rgba(247, 0, 98, 0.5);
+  box-shadow: 0 10px 25px rgba(247, 0, 98, 0.15);
+}
+
+.guide-card-image {
+  flex: 0 0 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.guide-card-image img {
+  width: 90px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+}
+
+.guide-card-content {
+  flex: 1;
+  text-align: right; /* Texto alineado a la derecha */
+  padding-left: 20px;
+}
+
+.guide-card-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guide-card-subtitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f70062; /* Color neón destacado */
+  margin: 4px 0 14px 0;
+}
+
+.btn-guide-card {
+  display: inline-block;
+  background: #f70062;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-guide-card:hover {
+  background: #d60052;
+  transform: scale(1.03);
+}
+
+/* Adaptación para celulares */
+@media (max-width: 600px) {
+  .guide-card {
+    flex-direction: row; /* Mantiene la imagen a la izquierda y texto a la derecha */
+    padding: 16px;
+  }
+  .guide-card-image {
+    flex: 0 0 80px;
+  }
+  .guide-card-image img {
+    width: 70px;
+  }
+  .guide-card-title {
+    font-size: 1.4rem;
+  }
+  .guide-card-subtitle {
+    font-size: 1.1rem;
+  }
+  .btn-guide-card {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================================================
+   ESTILOS PARA EL BANNER ¿CÓMO COMPRAR? (IGUAL AL BANNER HERO)
+   ========================================================= */
+
+/* Elimina el subrayado por ser un enlace <a> */
+.guide-banner {
+  text-decoration: none !important;
+  margin-top: 88px !important; /* Aumenta o disminuye este valor según tu gusto */
+}
+
+/* Alineación del texto a la derecha */
+.guide-text {
+  align-items: flex-end !important;
+  text-align: right !important;
+}
+
+/* Tipografía CalSans idéntica para "¿cómo" */
+.guide-text .text-como {
+  font-size: 8rem;
+  text-transform: lowercase;
+}
+
+/* Tipografía CalSans idéntica para "comprar?" */
+.guide-text .text-comprar {
+  font-size: 7.2rem;
+  color: #ffffff;
+}
+
+/* Subtítulo "Beats o Librerías" en tono rosa neón y CalSans */
+.guide-text .text-sub-guide {
+  font-size: 3rem;
+  color: #F70062;
+  -webkit-text-stroke:1px #790024;
+  margin-top: 10px;
+}
+
+/* Ajuste para la imagen bolso.png a la izquierda */
+.guide-image {
+  max-width: 380px;
+  width: 40%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(247, 0, 98, 0.3));
+}
+
+/* =========================================================
+   ADAPTACIÓN RESPONSIVA PARA CELULARES
+   ========================================================= */
+@media (max-width: 768px) {
+  .guide-text .text-como {
+    font-size: 2.8rem !important;
+    line-height: 0.85;
+  }
+
+  .guide-text .text-comprar {
+    font-size: 2.3rem !important;
+    line-height: 0.85;
+  }
+
+  .guide-text .text-sub-guide {
+    font-size: 1.1rem !important;
+    margin-top: 4px;
+  }
+
+  .guide-image {
+    width: 38% !important;
+    max-width: 130px !important;
+  }
+}
+
+/* Ajuste de 2 columnas para pantalla de celular */
+@media (max-width: 768px) {
+  #beats-container,
+  .beats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+  }
+
+  .beat-card {
+    padding: 10px;
+  }
+
+  .beat-title {
+    font-size: 0.9rem;
+  }
+
+  audio {
+    width: 100%;
+  }
+}

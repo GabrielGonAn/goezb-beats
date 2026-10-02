@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Cómo comprar? | Goez B Beats</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos específicos para la guía de compra */
+    .purchase-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+      font-size: 2.3rem;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #a0a0a0;
+      font-size: 1.05rem;
+    }
+
+    /* Steps Timeline */
+    .steps-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .step-card:hover {
+      border-color: rgba(247, 0, 98, 0.4);
+      transform: translateX(4px);
+    }
+
+    .step-number {
+      background: #f70062;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 800;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(247, 0, 98, 0.3);
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content h3 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin: 0 0 8px 0;
+    }
+
+    .step-content p {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .payment-badge {
+      display: inline-block;
+      background: rgba(247, 0, 98, 0.15);
+      border: 1px solid rgba(247, 0, 98, 0.3);
+      color: #f70062;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .phone-fallback {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    .phone-number {
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    .btn-back-home {
+      display: block;
+      width: fit-content;
+      margin: 40px auto 0 auto;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .btn-back-home:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      .step-card {
+        padding: 18px;
+        gap: 14px;
+      }
+      .step-number {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+      }
+      .page-header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="purchase-container">
+    <div class="page-header">
+      <h1>¿Cómo adquirir tu Beat o Librería?</h1>
+      <p>Proceso sencillo y rápido en 5 pasos directos por WhatsApp</p>
+    </div>
+
+    <div class="steps-timeline">
+
+      <!-- Paso 1 -->
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Escoge tu Beat o Librería</h3>
+          <p>Explora el catálogo principal y elige la instrumental o librería que mejor se adapte a tu proyecto musical.</p>
+        </div>
+      </div>
+
+      <!-- Paso 2 -->
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Selecciona tu tipo de Licencia</h3>
+          <p>Elige entre la <strong>Licencia WAV Básica</strong> o la <strong>Licencia Pro (WAV + Stems / Pistas separadas)</strong> según lo que requiera tu producción.</p>
+          <p><strong>Descarga </strong> y envía <strong>Solicitud de Compra</strong> a mi nnumero de whats.</p>
+        </div>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Haz clic en "Preguntar por este beat"</h3>
+          <p>El botón te redirigirá automáticamente a mi WhatsApp con los datos de tu pedido seleccionados.</p>
+          <div class="phone-fallback">
+            💡 <em>¿No abre el botón?</em> Puedes escribirme directamente al número: <span class="phone-number">+52 712 153 6916</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 4 -->
+      <div class="step-card">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Acordamos el Método de Pago</h3>
+          <p>En el chat confirmamos los detalles de tu compra y realizas el pago mediante el método de tu preferencia:</p>
+          <div>
+            <span class="payment-badge">🇲🇽 Transferencia Bancaria (México)</span>
+            <span class="payment-badge">🌎 PayPal (Internacional)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 5 -->
+      <div class="step-card">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Recibe tus archivos en alta calidad</h3>
+          <p>Una vez recibido el comprobante de pago, te enviaré de inmediato el enlace de descarga directo (Google Drive) con tu instrumental en alta definición, licencias y extras acordados.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Botón para regresar al inicio -->
+    <a href="index.html" class="btn-back-home">← Volver al Catálogo</a>
+  </main>
+
+  <script>
+    // Efecto táctil suave para dispositivos móviles
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.step-card, .btn-back-home');
+      cards.forEach(el => {
+        el.addEventListener('touchstart', () => el.classList.add('touch-active'), { passive: true });
+        el.addEventListener('touchend', () => setTimeout(() => el.classList.remove('touch-active'), 150));
+        el.addEventListener('touchcancel', () => el.classList.remove('touch-active'));
+      });
+    });
+  </script>
+</body>
+</html>

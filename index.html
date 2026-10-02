@@ -242,7 +242,22 @@
         </div>
         <img src="portadas1.png" alt="Portadas de Beats" class="hero-image">
       </div>
+
+          <!-- BANNER 2: ¿CÓMO COMPRAR? (MISMO TAMAÑO Y ESTILO HERO) -->
+    <a href="como-comprar.html" class="hero-banner guide-banner">
+      <!-- Imagen bolso.png a la izquierda -->
+      <img src="bolso.png" alt="Cómo comprar Beats o Librerías" class="hero-image guide-image">
+      
+      <!-- Texto CalSans alineado a la derecha -->
+      <div class="hero-text guide-text">
+        <span class="text-como">¿cómo</span>
+        <span class="text-comprar">comprar?</span>
+        <span class="text-sub-guide">Beats o Librerías</span>
+      </div>
+    </a>
     </section>
+
+
 
     <!-- 2. BEATS (CATÁLOGO DINÁMICO) -->
     <section id="beats" class="section">
@@ -374,47 +389,59 @@
 
     let beatSeleccionado = null;
 
-    function renderBeats(beatsAMostrar = misBeats) {
-      beatsContainer.innerHTML = '';
+function renderBeats(beatsAMostrar = misBeats) {
+    beatsContainer.innerHTML = '';
 
-      if (beatsAMostrar.length === 0) {
-        beatsContainer.innerHTML = `<p style="color: #888; grid-column: 1/-1; text-align: center; padding: 20px;">No se encontraron beats con los géneros seleccionados.</p>`;
-        return;
-      }
-
-      beatsAMostrar.forEach(beat => {
-        const card = document.createElement('div');
-        card.className = `beat-card ${beat.vendido ? 'beat-sold' : ''}`;
-
-        card.innerHTML = `
-          <div>
-            <div class="beat-header">
-              <span class="beat-title">${beat.titulo}</span>
-              <span class="beat-tag">${beat.genre}</span>
-            </div>
-            <div class="beat-details">
-              <span>BPM: ${beat.bpm}</span>
-            </div>
-          </div>
-
-          <audio controls preload="metadata">
-            <source src="${beat.archivo}" type="audio/mpeg">
-            Tu navegador no soporta el reproductor de audio.
-          </audio>
-
-          ${beat.vendido 
-            ? `<div class="sold-badge">❌ VENDIDO</div>` 
-            : `
-              <div class="beat-price">Desde ${beat.precioBasico}</div>
-              <button class="btn-buy" onclick="abrirDetalles(${beat.id})">Ver Detalles</button>
-            `
-          }
-        `;
-        beatsContainer.appendChild(card);
-      });
+    if (beatsAMostrar.length === 0) {
+      beatsContainer.innerHTML = `<p style="color: #888; grid-column: 1/-1; text-align: center; padding: 20px;">No se encontraron beats con los géneros seleccionados.</p>`;
+      return;
     }
 
-    renderBeats();
+    beatsAMostrar.forEach(beat => {
+      const card = document.createElement('div');
+      card.className = `beat-card ${beat.vendido ? 'beat-sold' : ''}`;
+
+      card.innerHTML = `
+        <div>
+          <div class="beat-header">
+            <span class="beat-title">${beat.titulo}</span>
+            <span class="beat-tag">${beat.genre}</span>
+          </div>
+          <div class="beat-details">
+            <span>BPM: ${beat.bpm}</span>
+          </div>
+        </div>
+
+        <audio controls preload="metadata">
+          <source src="${beat.archivo}" type="audio/mpeg">
+          Tu navegador no soporta el reproductor de audio.
+        </audio>
+
+        ${beat.vendido 
+          ? `<div class="sold-badge">❌ VENDIDO</div>` 
+          : `
+            <div class="beat-price">Desde ${beat.precioBasico}</div>
+            <button class="btn-buy" onclick="abrirDetalles(${beat.id})">Ver Detalles</button>
+          `
+        }
+      `;
+      beatsContainer.appendChild(card);
+    });
+
+    // --- CONTROL DE AUDIO ÚNICO ---
+    const allAudios = beatsContainer.querySelectorAll('audio');
+    allAudios.forEach(audio => {
+      audio.addEventListener('play', () => {
+        allAudios.forEach(otherAudio => {
+          if (otherAudio !== audio) {
+            otherAudio.pause();
+          }
+        });
+      });
+    });
+  }
+
+  renderBeats();
 
     function toggleFilterDropdown() {
       const dropdown = document.getElementById('filter-dropdown');

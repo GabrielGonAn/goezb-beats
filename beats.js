@@ -37,8 +37,19 @@ const misBeats = [
     genre: "Cumbia",
     bpm: 92,
     precioBasico: "$11 USD ($200 MXN)",
-    precioPro: "$21 USD ($380 MXN)",
+    precioPro: "$21 USD ($390 MXN)",
     archivo: "audios/c15.mp3",
+    vendido: false
+  }
+    ,
+    {
+    id: 5,
+    titulo: "Melancolia Party",
+    genre: "Reggaeton",
+    bpm: 95,
+    precioBasico: "$12 USD ($220MXN)",
+    precioPro: "$21 USD ($390 MXN)",
+    archivo: "audios/r66.mp3",
     vendido: false
   }
 ];
