@@ -212,6 +212,29 @@
     filter: brightness(1.2) !important;
     box-shadow: 0 6px 18px rgba(247, 0, 98, 0.3) !important;
     }
+
+    /* Posicionamiento para tarjetas de beat */
+.beat-card {
+  position: relative;
+}
+
+/* Etiqueta / badge flotante para los 3 beats más recientes */
+.recent-badge {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  background: linear-gradient(135deg, #F70062, #ff4500);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(247, 0, 98, 0.4);
+  letter-spacing: 0.5px;
+  z-index: 2;
+  pointer-events: none;
+}
   </style>
 </head>
 <body>
@@ -381,15 +404,36 @@
     </div>
   </div>
 
-  <!-- SCRIPT CON LOS BEATS Y LÓGICA -->
-  <script src="beats.js"></script>
-  <script>
-    const beatsContainer = document.getElementById('beats-container');
-    const MI_WHATSAPP = "527121536916";
+ <!-- SCRIPT CON LOS BEATS Y LÓGICA -->
+<script src="beats.js"></script>
+<script>
+  const beatsContainer = document.getElementById('beats-container');
+  const MI_WHATSAPP = "527121536916";
 
-    let beatSeleccionado = null;
+  let beatSeleccionado = null;
+  let beatsPreparados = [];
 
-function renderBeats(beatsAMostrar = misBeats) {
+  // Función para obtener los 3 últimos beats fijos y el resto de forma aleatoria (random)
+  function obtenerBeatsOrdenados(listaBase = misBeats) {
+    if (listaBase.length <= 3) {
+      return listaBase.map(b => ({ ...b, esReciente: true })).reverse();
+    }
+
+    // 1. Obtener los últimos 3 del array y voltearlos (el último añadido queda arriba de todos)
+    const ultimosTres = listaBase.slice(-3).reverse().map(b => ({ ...b, esReciente: true }));
+
+    // 2. Obtener los restantes y mezclarlos aleatoriamente
+    const restantes = listaBase.slice(0, -3).map(b => ({ ...b, esReciente: false }));
+    const restantesMezclados = restantes.sort(() => Math.random() - 0.5);
+
+    // 3. Unir los 3 recientes fijos con los restantes mezclados
+    return [...ultimosTres, ...restantesMezclados];
+  }
+
+  // Preparamos el catálogo al cargar la página por primera vez
+  beatsPreparados = obtenerBeatsOrdenados(misBeats);
+
+  function renderBeats(beatsAMostrar = beatsPreparados) {
     beatsContainer.innerHTML = '';
 
     if (beatsAMostrar.length === 0) {
@@ -402,6 +446,7 @@ function renderBeats(beatsAMostrar = misBeats) {
       card.className = `beat-card ${beat.vendido ? 'beat-sold' : ''}`;
 
       card.innerHTML = `
+        ${beat.esReciente ? `<div class="recent-badge">🔥 Lo más reciente</div>` : ''}
         <div>
           <div class="beat-header">
             <span class="beat-title">${beat.titulo}</span>
@@ -441,214 +486,212 @@ function renderBeats(beatsAMostrar = misBeats) {
     });
   }
 
-  renderBeats();
+  // Renderizar al inicio
+  renderBeats(beatsPreparados);
 
-    function toggleFilterDropdown() {
-      const dropdown = document.getElementById('filter-dropdown');
-      dropdown.classList.toggle('active');
-    }
+  function toggleFilterDropdown() {
+    const dropdown = document.getElementById('filter-dropdown');
+    dropdown.classList.toggle('active');
+  }
 
-    document.addEventListener('click', (e) => {
-      const wrapper = document.querySelector('.filter-wrapper');
-      if (wrapper && !wrapper.contains(e.target)) {
-        document.getElementById('filter-dropdown').classList.remove('active');
-      }
-    });
-
-    function aplicarFiltros() {
-      const checkboxes = document.querySelectorAll('.genre-checkbox:checked');
-      const generosSeleccionados = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
-
-      const btnFilter = document.getElementById('btn-filter');
-
-      if (generosSeleccionados.length === 0) {
-        renderBeats(misBeats);
-        btnFilter.classList.remove('is-filtered');
-      } else {
-        const beatsFiltrados = misBeats.filter(beat => {
-          const generoBeat = beat.genre.toLowerCase();
-          return generosSeleccionados.some(g => generoBeat.includes(g));
-        });
-        renderBeats(beatsFiltrados);
-        btnFilter.classList.add('is-filtered');
-      }
-
+  document.addEventListener('click', (e) => {
+    const wrapper = document.querySelector('.filter-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
       document.getElementById('filter-dropdown').classList.remove('active');
     }
+  });
 
-    function limpiarFiltros() {
-      const checkboxes = document.querySelectorAll('.genre-checkbox');
-      checkboxes.forEach(cb => cb.checked = false);
-      renderBeats(misBeats);
-      
-      const btnFilter = document.getElementById('btn-filter');
+  function aplicarFiltros() {
+    const checkboxes = document.querySelectorAll('.genre-checkbox:checked');
+    const generosSeleccionados = Array.from(checkboxes).map(cb => cb.value.toLowerCase());
+
+    const btnFilter = document.getElementById('btn-filter');
+
+    if (generosSeleccionados.length === 0) {
+      renderBeats(beatsPreparados);
       btnFilter.classList.remove('is-filtered');
-
-      document.getElementById('filter-dropdown').classList.remove('active');
-    }
-
-    const modalDetalles = document.getElementById('modal-detalles');
-
-    function abrirDetalles(id) {
-      beatSeleccionado = misBeats.find(b => b.id === id);
-      if (!beatSeleccionado) return;
-
-      document.getElementById('modal-beat-title').innerText = beatSeleccionado.titulo;
-      document.getElementById('modal-beat-meta').innerText = `Género: ${beatSeleccionado.genre} • BPM: ${beatSeleccionado.bpm}`;
-      document.getElementById('opt-price-basic').innerText = beatSeleccionado.precioBasico;
-      document.getElementById('opt-price-pro').innerText = beatSeleccionado.precioPro;
-
-      document.getElementById('ticket-preview-container').style.display = 'none';
-
-      modalDetalles.classList.add('active');
-    }
-
-    function cerrarModal() {
-      modalDetalles.classList.remove('active');
-    }
-
-    modalDetalles.addEventListener('click', (e) => {
-      if (e.target === modalDetalles) {
-        cerrarModal();
-      }
-    });
-
-    function seleccionarOpcion(tipoLicencia) {
-      const precioElegido = tipoLicencia.includes('Básica') 
-        ? beatSeleccionado.precioBasico 
-        : beatSeleccionado.precioPro;
-
-      const incluyeTexto = tipoLicencia.includes('Básica') 
-        ? "Incluye: Archivo WAV de alta calidad masterizado" 
-        : "Incluye: WAV + Stems (Trackouts) + Loops & Extras";
-
-      const canvas = document.createElement('canvas');
-      canvas.width = 500;
-      canvas.height = 360;
-      const ctx = canvas.getContext('2d');
-
-      ctx.fillStyle = '#181818';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = '#F70062';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-
-      ctx.fillStyle = '#F70062';
-      ctx.font = 'bold 22px sans-serif';
-      ctx.fillText('SOLICITUD DE INSTRUMENTAL', 30, 45);
-
-      ctx.fillStyle = '#888888';
-      ctx.font = '12px sans-serif';
-      const fecha = new Date().toLocaleDateString();
-      ctx.fillText(`FECHA: ${fecha}`, 350, 45);
-
-      ctx.strokeStyle = '#333333';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(30, 60);
-      ctx.lineTo(470, 60);
-      ctx.stroke();
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 20px sans-serif';
-      ctx.fillText(`BEAT: "${beatSeleccionado.titulo}"`, 30, 95);
-
-      ctx.fillStyle = '#AAAAAA';
-      ctx.font = '14px sans-serif';
-      ctx.fillText(`Género: ${beatSeleccionado.genre}  |  BPM: ${beatSeleccionado.bpm}`, 30, 125);
-
-      ctx.fillStyle = '#F70062';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.fillText(`LICENCIA SELECCIONADA:`, 30, 165);
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = '14px sans-serif';
-      ctx.fillText(tipoLicencia, 30, 190);
-
-      ctx.fillStyle = '#888888';
-      ctx.font = '13px sans-serif';
-      ctx.fillText(incluyeTexto, 30, 215);
-
-      ctx.fillStyle = '#28a745';
-      ctx.font = 'bold 24px sans-serif';
-      ctx.fillText(`PRECIO: ${precioElegido}`, 30, 265);
-
-      ctx.fillStyle = '#555555';
-      ctx.font = 'italic 11px sans-serif';
-      ctx.fillText('Envía esta imagen por WhatsApp para concretar tu pedido.', 30, 320);
-
-      const imageData = canvas.toDataURL('image/png');
-
-      const wrapper = document.getElementById('ticket-canvas-wrapper');
-      wrapper.innerHTML = `<img src="${imageData}" style="max-width: 100%; border-radius: 8px; border: 1px solid #333;" alt="Ticket Beat">`;
-
-      const btnDownload = document.getElementById('btn-download-ticket');
-      btnDownload.href = imageData;
-      btnDownload.download = `Solicitud_${beatSeleccionado.titulo.replace(/\s+/g, '_')}.png`;
-
-      const msgWa = encodeURIComponent(`Hola, me interesa solicitar el beat: "${beatSeleccionado.titulo}" en la opción: ${tipoLicencia} (${precioElegido}). Te adjunto la imagen del ticket que acabo de descargar.`);
-      document.getElementById('btn-wa-ticket').href = `https://wa.me/${MI_WHATSAPP}?text=${msgWa}`;
-
-      const ticketContainer = document.getElementById('ticket-preview-container');
-      ticketContainer.style.display = 'block';
-
-      ticketContainer.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    const navButtons = document.querySelectorAll('.nav-btn');
-    navButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = button.getAttribute('data-target');
-        const targetSection = document.getElementById(targetId);
-
-        if (targetSection.classList.contains('active')) return;
-
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        const currentSection = document.querySelector('.section.active');
-        if (currentSection) {
-          currentSection.classList.remove('zoom-in');
-          currentSection.classList.add('zoom-out');
-
-          setTimeout(() => {
-            currentSection.classList.remove('active', 'zoom-out');
-            targetSection.classList.add('active', 'zoom-in');
-          }, 180);
-        } else {
-          targetSection.classList.add('active', 'zoom-in');
-        }
+    } else {
+      const beatsFiltrados = beatsPreparados.filter(beat => {
+        const generoBeat = beat.genre.toLowerCase();
+        return generosSeleccionados.some(g => generoBeat.includes(g));
       });
-    });
-
-    function irABeats() {
-      const btnBeats = document.querySelector('.nav-btn[data-target="beats"]');
-      if (btnBeats) btnBeats.click();
+      renderBeats(beatsFiltrados);
+      btnFilter.classList.add('is-filtered');
     }
 
-    // EFECTO TÁCTIL SUAVE PARA MÓVILES (SCROLL Y TOUCH)
-document.addEventListener('DOMContentLoaded', () => {
-  // Elementos a los que se aplicará el resalte táctil al tocarlos
-  const interactivos = document.querySelectorAll('.btn-filter, .btn-reset-filter, .btn-buy, .beat-card, .nav-btn');
+    document.getElementById('filter-dropdown').classList.remove('active');
+  }
 
-  interactivos.forEach(el => {
-    // Al posar el dedo sobre el elemento
-    el.addEventListener('touchstart', () => {
-      el.classList.add('touch-active');
-    }, { passive: true });
+  function limpiarFiltros() {
+    const checkboxes = document.querySelectorAll('.genre-checkbox');
+    checkboxes.forEach(cb => cb.checked = false);
+    renderBeats(beatsPreparados);
 
-    // Al levantar el dedo o cancelar el toque
-    el.addEventListener('touchend', () => {
-      setTimeout(() => el.classList.remove('touch-active'), 150);
-    });
+    const btnFilter = document.getElementById('btn-filter');
+    if (btnFilter) btnFilter.classList.remove('is-filtered');
 
-    el.addEventListener('touchcancel', () => {
-      el.classList.remove('touch-active');
+    document.getElementById('filter-dropdown').classList.remove('active');
+  }
+
+  const modalDetalles = document.getElementById('modal-detalles');
+
+  function abrirDetalles(id) {
+    beatSeleccionado = misBeats.find(b => b.id === id);
+    if (!beatSeleccionado) return;
+
+    document.getElementById('modal-beat-title').innerText = beatSeleccionado.titulo;
+    document.getElementById('modal-beat-meta').innerText = `Género: ${beatSeleccionado.genre} • BPM: ${beatSeleccionado.bpm}`;
+    document.getElementById('opt-price-basic').innerText = beatSeleccionado.precioBasico;
+    document.getElementById('opt-price-pro').innerText = beatSeleccionado.precioPro;
+
+    document.getElementById('ticket-preview-container').style.display = 'none';
+
+    modalDetalles.classList.add('active');
+  }
+
+  function cerrarModal() {
+    modalDetalles.classList.remove('active');
+  }
+
+  modalDetalles.addEventListener('click', (e) => {
+    if (e.target === modalDetalles) {
+      cerrarModal();
+    }
+  });
+
+  function seleccionarOpcion(tipoLicencia) {
+    const precioElegido = tipoLicencia.includes('Básica') 
+      ? beatSeleccionado.precioBasico 
+      : beatSeleccionado.precioPro;
+
+    const incluyeTexto = tipoLicencia.includes('Básica') 
+      ? "Incluye: Archivo WAV de alta calidad masterizado" 
+      : "Incluye: WAV + Stems (Trackouts) + Loops & Extras";
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 500;
+    canvas.height = 360;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#181818';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#F70062';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+    ctx.fillStyle = '#F70062';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('SOLICITUD DE INSTRUMENTAL', 30, 45);
+
+    ctx.fillStyle = '#888888';
+    ctx.font = '12px sans-serif';
+    const fecha = new Date().toLocaleDateString();
+    ctx.fillText(`FECHA: ${fecha}`, 350, 45);
+
+    ctx.strokeStyle = '#333333';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(30, 60);
+    ctx.lineTo(470, 60);
+    ctx.stroke();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText(`BEAT: "${beatSeleccionado.titulo}"`, 30, 95);
+
+    ctx.fillStyle = '#AAAAAA';
+    ctx.font = '14px sans-serif';
+    ctx.fillText(`Género: ${beatSeleccionado.genre}  |  BPM: ${beatSeleccionado.bpm}`, 30, 125);
+
+    ctx.fillStyle = '#F70062';
+    ctx.font = 'bold 15px sans-serif';
+    ctx.fillText(`LICENCIA SELECCIONADA:`, 30, 165);
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '14px sans-serif';
+    ctx.fillText(tipoLicencia, 30, 190);
+
+    ctx.fillStyle = '#888888';
+    ctx.font = '13px sans-serif';
+    ctx.fillText(incluyeTexto, 30, 215);
+
+    ctx.fillStyle = '#28a745';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText(`PRECIO: ${precioElegido}`, 30, 265);
+
+    ctx.fillStyle = '#555555';
+    ctx.font = 'italic 11px sans-serif';
+    ctx.fillText('Envía esta imagen por WhatsApp para concretar tu pedido.', 30, 320);
+
+    const imageData = canvas.toDataURL('image/png');
+
+    const wrapper = document.getElementById('ticket-canvas-wrapper');
+    wrapper.innerHTML = `<img src="${imageData}" style="max-width: 100%; border-radius: 8px; border: 1px solid #333;" alt="Ticket Beat">`;
+
+    const btnDownload = document.getElementById('btn-download-ticket');
+    btnDownload.href = imageData;
+    btnDownload.download = `Solicitud_${beatSeleccionado.titulo.replace(/\s+/g, '_')}.png`;
+
+    const msgWa = encodeURIComponent(`Hola, me interesa solicitar el beat: "${beatSeleccionado.titulo}" en la opción: ${tipoLicencia} (${precioElegido}). Te adjunto la imagen del ticket que acabo de descargar.`);
+    document.getElementById('btn-wa-ticket').href = `https://wa.me/${MI_WHATSAPP}?text=${msgWa}`;
+
+    const ticketContainer = document.getElementById('ticket-preview-container');
+    ticketContainer.style.display = 'block';
+
+    ticketContainer.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const navButtons = document.querySelectorAll('.nav-btn');
+  navButtons.forEach(button => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = button.getAttribute('data-target');
+      const targetSection = document.getElementById(targetId);
+
+      if (targetSection.classList.contains('active')) return;
+
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const currentSection = document.querySelector('.section.active');
+      if (currentSection) {
+        currentSection.classList.remove('zoom-in');
+        currentSection.classList.add('zoom-out');
+
+        setTimeout(() => {
+          currentSection.classList.remove('active', 'zoom-out');
+          targetSection.classList.add('active', 'zoom-in');
+        }, 180);
+      } else {
+        targetSection.classList.add('active', 'zoom-in');
+      }
     });
   });
-});
-  </script>
+
+  function irABeats() {
+    const btnBeats = document.querySelector('.nav-btn[data-target="beats"]');
+    if (btnBeats) btnBeats.click();
+  }
+
+  // EFECTO TÁCTIL SUAVE PARA MÓVILES (SCROLL Y TOUCH)
+  document.addEventListener('DOMContentLoaded', () => {
+    const interactivos = document.querySelectorAll('.btn-filter, .btn-reset-filter, .btn-buy, .beat-card, .nav-btn');
+
+    interactivos.forEach(el => {
+      el.addEventListener('touchstart', () => {
+        el.classList.add('touch-active');
+      }, { passive: true });
+
+      el.addEventListener('touchend', () => {
+        setTimeout(() => el.classList.remove('touch-active'), 150);
+      });
+
+      el.addEventListener('touchcancel', () => {
+        el.classList.remove('touch-active');
+      });
+    });
+  });
+</script>
 </body>
 </html>
