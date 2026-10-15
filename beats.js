@@ -107,4 +107,37 @@ const misBeats = [
     archivo: "audios/r39.mp3",
     vendido: false
   }
+       ,
+    {
+    id: 11,
+    titulo: "Galaxia Type",
+    genre: "Reggaeton",
+    bpm: 92,
+    precioBasico: "$12 USD ($220MXN)",
+    precioPro: "$19 USD ($350 MXN)",
+    archivo: "audios/r69.mp3",
+    vendido: false
+  }
+         ,
+    {
+    id: 12,
+    titulo: "Decepción Mood",
+    genre: "Reggaeton",
+    bpm: 91,
+    precioBasico: "$16 USD ($290MXN)",
+    precioPro: "$21 USD ($390 MXN)",
+    archivo: "audios/r67_2.mp3",
+    vendido: false
+  }
+           ,
+    {
+    id: 13,
+    titulo: "Traciones Type CrMJ",
+    genre: "Reggaeton",
+    bpm: 95,
+    precioBasico: "$18 USD ($330MXN)",
+    precioPro: "$22 USD ($400 MXN)",
+    archivo: "audios/r70.mp3",
+    vendido: false
+  }
 ];
