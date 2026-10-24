@@ -325,13 +325,16 @@
       </div>
     </section>
 
-    <!-- 3. SOUNDPACKS -->
-    <section id="soundpacks" class="section">
-      <div class="card-preview">
-        <h2>Librerías & Soundpacks</h2>
-        <p>Próximamente drumkits y presets disponibles.</p>
-      </div>
-    </section>
+<!-- 3. SOUNDPACKS (SECCIÓN DINÁMICA) -->
+<section id="soundpacks" class="section">
+  <h2 style="color: #F70062; margin-bottom: 25px; font-size: 2rem; text-transform: uppercase;">Librerías & Soundpacks</h2>
+  
+  <!-- Aquí se cargarán automáticamente los kits desde kits.js -->
+  <div id="soundpacks-container" class="soundpacks-grid"></div>
+</section>
+
+<!-- Incluir el script de kits al final, antes de cerrar el <body> -->
+<script src="kits.js"></script>
 
     <!-- 4. MI MÚSICA -->
     <section id="mi-musica" class="section">
@@ -692,6 +695,96 @@
       });
     });
   });
+  const soundpacksContainer = document.getElementById('soundpacks-container');
+
+function renderSoundpacks() {
+  if (!soundpacksContainer) return;
+  soundpacksContainer.innerHTML = '';
+
+  if (typeof misKits === 'undefined' || misKits.length === 0) {
+    soundpacksContainer.innerHTML = `<p style="color: #888; grid-column: 1/-1; text-align: center; padding: 20px;">No hay librerías disponibles por el momento.</p>`;
+    return;
+  }
+
+  misKits.forEach(kit => {
+    const card = document.createElement('div');
+    card.className = `sp-card ${kit.esGratis ? 'card-free' : 'card-pro'}`;
+
+    card.innerHTML = `
+      <div class="sp-top">
+        <div class="sp-img-container">
+          <img src="${kit.portada}" alt="${kit.titulo} ${kit.subtitulo}">
+          ${kit.badgePortada ? `<span class="sp-badge-cover">${kit.badgePortada}</span>` : ''}
+        </div>
+        
+        <div class="sp-info">
+          <!-- Tag sobre la descripción a la derecha -->
+          ${kit.tipoTag ? `<span class="sp-type-tag">${kit.tipoTag}</span>` : ''}
+          
+          <h3 class="sp-title">${kit.titulo}</h3>
+          <p class="sp-sub">${kit.subtitulo}</p>
+          
+          <div class="sp-stats">
+            <span>${kit.archivos}</span>
+            <span>${kit.midis}</span>
+          </div>
+
+          ${kit.audioDemo ? `
+            <button class="sp-btn-listen" onclick="reproducirDemoKit('${kit.audioDemo}', this)">
+              <span class="material-symbols-outlined">play_circle</span> Escuchar
+            </button>
+          ` : ''}
+        </div>
+      </div>
+
+      <div class="sp-bottom">
+        <div class="sp-price-box">
+          ${kit.esGratis 
+            ? `<span class="sp-label">${kit.textoAuxiliar || 'DESCARGA DIRECTA'}</span><span class="sp-price-val">${kit.precio}</span>`
+            : `<span class="sp-label-old">${kit.precioAntes || ''}</span><span class="sp-price-val">${kit.precio}</span>`
+          }
+        </div>
+
+        ${kit.esGratis 
+          ? `<a href="${kit.linkDescarga}" target="_blank" class="sp-btn-action btn-free">⬇ Descargar gratis</a>`
+          : `<a href="${kit.linkWhatsApp}" target="_blank" class="sp-btn-action btn-wa">💬 Comprar</a>`
+        }
+      </div>
+    `;
+
+    soundpacksContainer.appendChild(card);
+  });
+}
+
+// Control de audio para los previews de los Kits
+let audioKitActual = null;
+function reproducirDemoKit(src, btn) {
+  if (audioKitActual) {
+    audioKitActual.pause();
+    if (audioKitActual.src.includes(src)) {
+      audioKitActual = null;
+      btn.innerHTML = `<span class="material-symbols-outlined">play_circle</span> Escuchar`;
+      return;
+    }
+  }
+
+  // Detener también audios de los beats si sonaban
+  document.querySelectorAll('audio').forEach(a => a.pause());
+
+  audioKitActual = new Audio(src);
+  audioKitActual.play();
+  btn.innerHTML = `<span class="material-symbols-outlined">pause_circle</span> Pausar`;
+
+  audioKitActual.onended = () => {
+    btn.innerHTML = `<span class="material-symbols-outlined">play_circle</span> Escuchar`;
+    audioKitActual = null;
+  };
+}
+
+// Ejecutar el renderizado de kits al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+  renderSoundpacks();
+});
 </script>
 </body>
 </html>
