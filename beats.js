@@ -129,9 +129,20 @@ const misBeats = [
     archivo: "audios/r67_2.mp3",
     vendido: false
   }
-           ,
+             ,
     {
     id: 13,
+    titulo: "Fiesta Night",
+    genre: "Reggaeton",
+    bpm: 97,
+    precioBasico: "$16 USD ($190MXN)",
+    precioPro: "$17 USD ($320 MXN)",
+    archivo: "audios/r72.mp3",
+    vendido: false 
+  }
+           ,
+    {
+    id: 14,
     titulo: "Traciones Type CrMJ",
     genre: "Reggaeton",
     bpm: 95,
@@ -140,4 +151,28 @@ const misBeats = [
     archivo: "audios/r70.mp3",
     vendido: false
   }
+    ,
+    {
+    id: 15,
+    titulo: "Triste Type FyMn",
+    genre: "Reggaeton",
+    bpm: 95,
+    precioBasico: "$18 USD ($330MXN)",
+    precioPro: "$22 USD ($400 MXN)",
+    archivo: "audios/r85cat.mp3",
+    vendido: false
+  }
+
+      ,
+    {
+    id: 16,
+    titulo: "Perreo No Love",
+    genre: "Reggaeton",
+    bpm: 95,
+    precioBasico: "$22 USD ($400MXN)",
+    precioPro: "$28 USD ($520 MXN)",
+    archivo: "audios/r45cat.mp3",
+    vendido: false
+  }
+
 ];
