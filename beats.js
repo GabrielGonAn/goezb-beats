@@ -33,12 +33,12 @@ const misBeats = [
   ,
     {
     id: 4,
-    titulo: "Noches Vlc",
-    genre: "Cumbia",
-    bpm: 92,
+    titulo: "Recuerdos Olds",
+    genre: "Reggaeton",
+    bpm: 94,
     precioBasico: "$11 USD ($200 MXN)",
     precioPro: "$21 USD ($390 MXN)",
-    archivo: "audios/c15.mp3",
+    archivo: "audios/r90.mp3",
     vendido: false
   }
     ,
@@ -172,6 +172,17 @@ const misBeats = [
     precioBasico: "$22 USD ($400MXN)",
     precioPro: "$28 USD ($520 MXN)",
     archivo: "audios/r45cat.mp3",
+    vendido: false
+  }
+        ,
+    {
+    id: 18,
+    titulo: "Obsesionado Old",
+    genre: "Reggaeton",
+    bpm: 88,
+    precioBasico: "$21 USD ($380MXN)",
+    precioPro: "$24 USD ($450 MXN)",
+    archivo: "audios/r91.mp3",
     vendido: false
   }
 
