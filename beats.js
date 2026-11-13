@@ -151,9 +151,20 @@ const misBeats = [
     archivo: "audios/r70.mp3",
     vendido: false
   }
-    ,
+             ,
     {
     id: 15,
+    titulo: "Viejos tiempos",
+    genre: "Reggaeton",
+    bpm: 86,
+    precioBasico: "$18 USD ($330MXN)",
+    precioPro: "$22 USD ($400 MXN)",
+    archivo: "audios/r88.mp3",
+    vendido: false
+  }
+    ,
+    {
+    id: 16,
     titulo: "Triste Type FyMn",
     genre: "Reggaeton",
     bpm: 95,
@@ -165,7 +176,7 @@ const misBeats = [
 
       ,
     {
-    id: 16,
+    id: 17,
     titulo: "Perreo No Love",
     genre: "Reggaeton",
     bpm: 95,
