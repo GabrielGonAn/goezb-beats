@@ -174,20 +174,9 @@ const misBeats = [
     vendido: false
   }
 
-      ,
+          ,
     {
     id: 17,
-    titulo: "Perreo No Love",
-    genre: "Reggaeton",
-    bpm: 95,
-    precioBasico: "$22 USD ($400MXN)",
-    precioPro: "$28 USD ($520 MXN)",
-    archivo: "audios/r45cat.mp3",
-    vendido: false
-  }
-        ,
-    {
-    id: 18,
     titulo: "Obsesionado Old",
     genre: "Reggaeton",
     bpm: 88,
@@ -196,5 +185,44 @@ const misBeats = [
     archivo: "audios/r91.mp3",
     vendido: false
   }
+
+      ,
+    {
+    id: 18,
+    titulo: "Perreo No Love",
+    genre: "Reggaeton",
+    bpm: 95,
+    precioBasico: "$22 USD ($400MXN)",
+    precioPro: "$28 USD ($520 MXN)",
+    archivo: "audios/r45cat.mp3",
+    vendido: false
+  }
+
+
+          ,
+    {
+    id: 19,
+    titulo: "Romantic Style Old",
+    genre: "Reggaeton",
+    bpm: 86,
+    precioBasico: "$12 USD ($220MXN)",
+    precioPro: "$16 USD ($300 MXN)",
+    archivo: "audios/r92.mp3",
+    vendido: false
+  }
+
+          ,
+    {
+    id: 20,
+    titulo: "Apretado",
+    genre: "Reggaeton",
+    bpm: 96,
+    precioBasico: "$17 USD ($320MXN)",
+    precioPro: "$22 USD ($400 MXN)",
+    archivo: "audios/r93.mp3",
+    vendido: false
+  }
+
+  
 
 ];
